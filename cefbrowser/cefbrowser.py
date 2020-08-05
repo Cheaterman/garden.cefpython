@@ -436,7 +436,7 @@ class CEFBrowser(Widget, FocusBehavior):
         rect,
         attributes,
     ):  # TODO: place right, left, etc. see cefkivy
-        if not keyboard_widget.docked:
+        if keyboard_widget and not keyboard_widget.docked:
             cls.keyboard_position_simple(
                 browser, keyboard_widget, rect, attributes)
             if Window.width < keyboard_widget.x + keyboard_widget.width:
@@ -939,15 +939,15 @@ class ClientHandler:
     def OnTitleChange(self, browser, title):  # noqa: N802
         self.browser_widgets[browser].title = title
 
-    def OnTooltip(self, text_out):  # noqa: N802
+    def OnTooltip(self, browser, text_out):  # noqa: N802
         text_out.append("")
         return True
 
     def OnStatusMessage(self, browser, value):  # noqa: N802
         Logger.info("CEFBrowser: Status: %s", value)
 
-    def OnConsoleMessage(self, browser, message, source, line):  # noqa: N802
-        Logger.info("CEFBrowser: Console: %s - %s(%i)", message, source, line)
+    def OnConsoleMessage(self, browser, message, source, line, level):  # noqa: N802
+        Logger.info("CEFBrowser: Console: %s - %s(%i) - %s", message, source, line, level)
         return True  # We handled it
 
     # DownloadHandler
@@ -1527,6 +1527,7 @@ document.addEventListener("selectionchange", function (e) {
         frame,
         request,
         is_redirect,
+        user_gesture,
     ):
         frame.ExecuteJavascript("try {__kivy__on_escape();} catch (err) {}")
 

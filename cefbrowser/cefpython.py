@@ -116,9 +116,12 @@ def cefpython_initialize(cef_browser_cls):
         Logger.warning("CEFLoader: Failed to set up cookie manager: %s" % e)
 
     def cefpython_shutdown(*largs):
-        print("CEFPYTHON SHUTDOWN", largs, App.get_running_app())
+        Logger.info("CEFPython: Shutdown")
         cefpython.Shutdown()
-        App.get_running_app().stop()
+
+        app = App.get_running_app()
+        if app:
+            app.stop()
 
     def cefpython_exit(*largs):
         cefpython_shutdown()
